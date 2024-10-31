@@ -10,6 +10,7 @@ import br.com.alura.orgs.databinding.ActivityFormularioProdutoBinding
 import br.com.alura.orgs.extensions.tentaCarregarImagem
 import br.com.alura.orgs.model.Produto
 import br.com.alura.orgs.ui.dialog.FormularioImagemDialog
+import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.launch
 import java.math.BigDecimal
 
@@ -83,15 +84,18 @@ class FormularioProdutoActivity : UsuarioBaseActivity() {
         val botaoSalvar = binding.activityFormularioProdutoBotaoSalvar
 
         botaoSalvar.setOnClickListener {
-            val produtoNovo = criaProduto()
+
             lifecycleScope.launch {
-                produtoDao.salvar(produtoNovo)
-                finish()
+                usuario.value?.let { usuario ->
+                    val produtoNovo = criaProduto(usuario.id)
+                    produtoDao.salvar(produtoNovo)
+                    finish()
+                }
             }
         }
     }
 
-    private fun criaProduto(): Produto {
+    private fun criaProduto(usuarioId: String): Produto {
         val campoNome = binding.activityFormularioProdutoNome
         val nome = campoNome.text.toString()
         val campoDescricao = binding.activityFormularioProdutoDescricao
@@ -104,8 +108,14 @@ class FormularioProdutoActivity : UsuarioBaseActivity() {
             BigDecimal(valorEmTexto)
         }
 
-        return Produto(id = produtoId, nome = nome, descricao = descricao,
-            valor = valor, imagem = url)
+        return Produto(
+            id = produtoId,
+            nome = nome,
+            descricao = descricao,
+            valor = valor,
+            imagem = url,
+            usuarioId = usuarioId
+        )
     }
 
 }

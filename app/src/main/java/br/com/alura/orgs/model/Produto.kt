@@ -14,5 +14,6 @@ data class Produto(
         @ColumnInfo(name = "nome") val nome: String,
         @ColumnInfo(name = "descricao") val descricao: String,
         @ColumnInfo(name = "valor") val valor: BigDecimal,
-        @ColumnInfo(name = "imagem") val imagem: String? = null
+        @ColumnInfo(name = "imagem") val imagem: String? = null,
+        val usuarioId: String? = null
 ) : Parcelable
