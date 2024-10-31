@@ -33,9 +33,9 @@ class ListaProdutosActivity : UsuarioBaseActivity() {
 
         lifecycleScope.launch {
             launch {
-                usuario.filterNotNull().collect {
-                    Log.i("ListaProdutos", "onCreate: $it")
-                    buscaProdutosUsuario()
+                usuario.filterNotNull().collect { usuario ->
+                    Log.i("ListaProdutos", "onCreate: $usuario")
+                    buscaProdutosUsuario(usuario.id)
                 }
             }
         }
@@ -85,8 +85,8 @@ class ListaProdutosActivity : UsuarioBaseActivity() {
         }
     }
 
-    protected suspend fun buscaProdutosUsuario() {
-        produtoDao.buscaTodos().collect { produtos ->
+    private suspend fun buscaProdutosUsuario(usuarioId: String) {
+        produtoDao.buscaTodosDoUsuario(usuarioId).collect { produtos ->
             adapter.atualiza(produtos)
         }
     }
