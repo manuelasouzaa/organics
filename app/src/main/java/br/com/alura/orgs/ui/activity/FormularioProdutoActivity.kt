@@ -1,7 +1,6 @@
 package br.com.alura.orgs.ui.activity
 
 import android.os.Bundle
-import android.util.Log
 import androidx.lifecycle.lifecycleScope
 import br.com.alura.orgs.database.AppDatabase
 import br.com.alura.orgs.database.dataStore
@@ -10,7 +9,6 @@ import br.com.alura.orgs.databinding.ActivityFormularioProdutoBinding
 import br.com.alura.orgs.extensions.tentaCarregarImagem
 import br.com.alura.orgs.model.Produto
 import br.com.alura.orgs.ui.dialog.FormularioImagemDialog
-import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.launch
 import java.math.BigDecimal
 
@@ -41,8 +39,7 @@ class FormularioProdutoActivity : UsuarioBaseActivity() {
         lifecycleScope.launch {
             dataStore.data.collect { preferences ->
                 preferences[usuarioLogadoPreferences]?.let { usuarioId ->
-                    val usuarioLogado = buscaUsuario(usuarioId)
-                        Log.i("FormularioProduto", "onCreate: $usuarioLogado")
+                    buscaUsuario(usuarioId)
                 }
             }
         }

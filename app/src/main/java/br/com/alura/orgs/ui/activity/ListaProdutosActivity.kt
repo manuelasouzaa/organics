@@ -1,13 +1,11 @@
 package br.com.alura.orgs.ui.activity
 
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import androidx.lifecycle.lifecycleScope
 import br.com.alura.orgs.R
 import br.com.alura.orgs.database.AppDatabase
-import br.com.alura.orgs.database.dataStore
 import br.com.alura.orgs.database.usuarioLogadoPreferences
 import br.com.alura.orgs.databinding.ActivityListaProdutosActivityBinding
 import br.com.alura.orgs.extensions.vaiPara
@@ -17,10 +15,10 @@ import kotlinx.coroutines.launch
 
 class ListaProdutosActivity : UsuarioBaseActivity() {
 
-    private val adapter = ListaProdutosAdapter(context = this)
     private val binding by lazy {
         ActivityListaProdutosActivityBinding.inflate(layoutInflater)
     }
+    private val adapter = ListaProdutosAdapter(this)
     private val produtoDao by lazy {
         AppDatabase.instancia(this).produtoDao()
     }
@@ -34,7 +32,6 @@ class ListaProdutosActivity : UsuarioBaseActivity() {
         lifecycleScope.launch {
             launch {
                 usuario.filterNotNull().collect { usuario ->
-                    Log.i("ListaProdutos", "onCreate: $usuario")
                     buscaProdutosUsuario(usuario.id)
                 }
             }
@@ -50,9 +47,6 @@ class ListaProdutosActivity : UsuarioBaseActivity() {
         when (item.itemId) {
             R.id.usuarioInfo -> {
                 lifecycleScope.launch {
-                    dataStore.data.collect { preferences ->
-                        preferences[usuarioLogadoPreferences]
-                    }
                     vaiPara(PerfilUsuarioActivity::class.java) {
                         usuarioLogadoPreferences
                     }
@@ -73,6 +67,14 @@ class ListaProdutosActivity : UsuarioBaseActivity() {
         vaiPara(FormularioProdutoActivity::class.java)
     }
 
+    private suspend fun buscaProdutosUsuario(usuarioId: String) {
+        produtoDao.buscaTodosDoUsuario(usuarioId).collect { produtos ->
+            lifecycleScope.launch {
+                adapter.atualiza(produtos)
+            }
+        }
+    }
+
     private fun configuraRecyclerView() {
         val recyclerView = binding.activityListaProdutosRecyclerView
         recyclerView.adapter = adapter
@@ -84,11 +86,4 @@ class ListaProdutosActivity : UsuarioBaseActivity() {
             }
         }
     }
-
-    private suspend fun buscaProdutosUsuario(usuarioId: String) {
-        produtoDao.buscaTodosDoUsuario(usuarioId).collect { produtos ->
-            adapter.atualiza(produtos)
-        }
-    }
-
 }

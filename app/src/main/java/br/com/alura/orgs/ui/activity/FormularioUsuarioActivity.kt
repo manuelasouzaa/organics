@@ -29,7 +29,6 @@ class FormularioUsuarioActivity : AppCompatActivity() {
     private fun configuraBotaoCadastrar() {
         binding.activityFormularioCadastroBotaoCadastrar.setOnClickListener {
             val novoUsuario = criaUsuario()
-            Log.i("Cadastro", "configuraBotaoCadastrar: $novoUsuario")
             cadastra(novoUsuario)
         }
     }

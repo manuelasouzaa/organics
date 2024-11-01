@@ -66,10 +66,6 @@ class DetalhesProdutoActivity : AppCompatActivity() {
                 vaiPara(FormularioProdutoActivity::class.java) {
                     putExtra(CHAVE_PRODUTO_ID, produtoId)
                 }
-//                Intent(this, FormularioProdutoActivity::class.java).apply {
-//                    putExtra(CHAVE_PRODUTO_ID, produtoId)
-//                    startActivity(this)
-//                }
             }
         }
         return super.onOptionsItemSelected(item)

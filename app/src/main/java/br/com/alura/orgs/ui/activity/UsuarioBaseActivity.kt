@@ -8,7 +8,6 @@ import androidx.lifecycle.lifecycleScope
 import br.com.alura.orgs.database.AppDatabase
 import br.com.alura.orgs.database.dataStore
 import br.com.alura.orgs.database.usuarioLogadoPreferences
-import br.com.alura.orgs.extensions.toast
 import br.com.alura.orgs.extensions.vaiPara
 import br.com.alura.orgs.model.Usuario
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -50,24 +49,10 @@ abstract class UsuarioBaseActivity: AppCompatActivity() {
         }
     }
 
-    protected suspend fun autentica(usuario: String, senha: String) {
-        usuarioDao.autentica(usuario, senha)?.let { usuarioLogin ->
-
-            dataStore.edit { preferences ->
-                preferences[usuarioLogadoPreferences] = usuarioLogin.id
-            }
-
-            vaiPara(ListaProdutosActivity::class.java)
-            finish()
-        } ?: toast("Falha na autenticação")
-    }
-
     protected fun vaiParaLogin() {
         vaiPara(LoginActivity::class.java) {
             addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
         }
         finish()
     }
-
-
 }

@@ -1,9 +1,7 @@
 package br.com.alura.orgs.ui.activity
 
 import android.os.Bundle
-import android.util.Log
 import androidx.lifecycle.lifecycleScope
-import br.com.alura.orgs.database.usuarioLogadoPreferences
 import br.com.alura.orgs.databinding.ActivityPerfilUsuarioBinding
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.launch
@@ -20,14 +18,11 @@ class PerfilUsuarioActivity: UsuarioBaseActivity() {
 
         btnSairConfig()
         preencherCampos()
-
-        Log.i("TESTE", "onCreate: $usuario, ${usuarioLogadoPreferences.name}")
-
     }
 
     private fun preencherCampos() {
         lifecycleScope.launch {
-            usuario.filterNotNull().collect {usuarioLogado ->
+            usuario.filterNotNull().collect { usuarioLogado ->
                 binding.nomeTextBox.text = usuarioLogado.nome
                 binding.usuarioTextBox.text = usuarioLogado.id
             }
