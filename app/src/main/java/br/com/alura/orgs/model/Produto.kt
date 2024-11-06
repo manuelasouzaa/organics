@@ -16,4 +16,6 @@ data class Produto(
         @ColumnInfo(name = "valor") val valor: BigDecimal,
         @ColumnInfo(name = "imagem") val imagem: String? = null,
         val usuarioId: String? = null
-) : Parcelable
+) : Parcelable {
+        fun salvoSemUsuario() = usuarioId.isNullOrBlank() && id > 0L
+}

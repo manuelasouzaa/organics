@@ -2,6 +2,7 @@ package br.com.alura.orgs.ui.activity
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.datastore.preferences.core.edit
 import androidx.lifecycle.lifecycleScope
@@ -12,6 +13,7 @@ import br.com.alura.orgs.extensions.vaiPara
 import br.com.alura.orgs.model.Usuario
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 
@@ -30,7 +32,7 @@ abstract class UsuarioBaseActivity: AppCompatActivity() {
     }
 
     protected suspend fun verificaUsuarioLogado() {
-        dataStore.data.collect { preferences ->
+        dataStore.data.first().let { preferences ->
             preferences[usuarioLogadoPreferences]?.let { usuarioId ->
                 buscaUsuario(usuarioId)
                 } ?: vaiParaLogin()
@@ -55,4 +57,6 @@ abstract class UsuarioBaseActivity: AppCompatActivity() {
         }
         finish()
     }
+
+    protected fun usuarios() = usuarioDao.buscaTodos()
 }

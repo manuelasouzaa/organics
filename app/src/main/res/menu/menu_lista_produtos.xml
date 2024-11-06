@@ -8,4 +8,15 @@
         android:icon="@drawable/ic_user"
         android:title="Sair do App"
         app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/btnMais"
+        android:icon="@drawable/ic_more"
+        android:title="Mais opções"
+        app:showAsAction="ifRoom">
+        <menu>
+            <item android:id="@+id/MostrarProdutos"
+                android:title="Todos os Produtos"
+                app:showAsAction="withText"/>
+        </menu>
+    </item>
 </menu>

@@ -12,6 +12,7 @@ import br.com.alura.orgs.extensions.vaiPara
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class LoginActivity : AppCompatActivity() {
 
@@ -55,7 +56,11 @@ class LoginActivity : AppCompatActivity() {
                     usuarioLogadoPreferences
                 }
                 finish()
-            } ?: toast("Falha na autenticação")
+            } ?: run {
+                withContext(Dispatchers.Main.immediate) {
+                    toast("Falha na autenticação")
+                }
+            }
         }
     }
 }

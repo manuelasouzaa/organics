@@ -12,7 +12,7 @@ import br.com.alura.orgs.model.Produto
 
 class ListaProdutosAdapter(
     private val context: Context,
-    produtos: List<Produto> = emptyList(),
+    produtos: List<Produto?> = emptyList(),
     var quandoClicaNoItem: (produto: Produto) -> Unit = {}
 ) : RecyclerView.Adapter<ListaProdutosAdapter.ViewHolder>() {
 
@@ -52,8 +52,6 @@ class ListaProdutosAdapter(
 
             binding.imageView.tentaCarregarImagem(produto.imagem)
         }
-
-
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -63,8 +61,8 @@ class ListaProdutosAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val produto = produtos[position]
-        holder.vincula(produto)
+        val produto: Produto? = produtos[position]
+        produto?.let { holder.vincula(it) }
     }
 
     override fun getItemCount(): Int = produtos.size

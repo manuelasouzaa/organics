@@ -52,6 +52,9 @@ class ListaProdutosActivity : UsuarioBaseActivity() {
                     }
                 }
             }
+            R.id.MostrarProdutos -> {
+                vaiPara(TodosProdutosActivity::class.java)
+            }
         }
         return super.onOptionsItemSelected(item)
     }

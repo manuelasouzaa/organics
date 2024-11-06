@@ -1,6 +1,9 @@
 package br.com.alura.orgs.ui.activity
 
 import android.os.Bundle
+import android.view.View.GONE
+import android.view.View.VISIBLE
+import android.widget.ArrayAdapter
 import androidx.lifecycle.lifecycleScope
 import br.com.alura.orgs.database.AppDatabase
 import br.com.alura.orgs.database.dataStore
@@ -9,6 +12,8 @@ import br.com.alura.orgs.databinding.ActivityFormularioProdutoBinding
 import br.com.alura.orgs.extensions.tentaCarregarImagem
 import br.com.alura.orgs.model.Produto
 import br.com.alura.orgs.ui.dialog.FormularioImagemDialog
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import java.math.BigDecimal
 
@@ -56,9 +61,17 @@ class FormularioProdutoActivity : UsuarioBaseActivity() {
 
     private fun tentaBuscarProduto() {
         lifecycleScope.launch {
-            produtoDao.buscaPorId(produtoId).collect {
-                it?.let { produtoEncontrado ->
+            produtoDao.buscaPorId(produtoId).first().let { produto ->
+                produto?.let { produtoEncontrado ->
                     title = "Alterar produto"
+                    val campoUsuarioId = binding.activityFormularioProdutoUsuario
+                    campoUsuarioId.visibility =
+                        if (produtoEncontrado.salvoSemUsuario()) {
+                            configuraCampoUsuario()
+                            VISIBLE
+                        } else {
+                            GONE
+                        }
                     preencheCampos(produtoEncontrado)
                 }
             }
@@ -92,13 +105,28 @@ class FormularioProdutoActivity : UsuarioBaseActivity() {
         }
     }
 
+    fun configuraCampoUsuario() {
+        lifecycleScope.launch {
+            usuarios().map { usuarios ->
+                usuarios.map {
+                    it.id }
+            }.collect { usuarios ->
+                    configuraAutoCompleteTextView(usuarios)
+            }
+        }
+    }
+
+    private fun configuraAutoCompleteTextView(usuarios: List<String>) {
+        val campoUsuarioId = binding.activityFormularioProdutoUsuario
+        val adapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, usuarios)
+        campoUsuarioId.setAdapter(adapter)
+        campoUsuarioId.threshold = 0
+    }
+
     private fun criaProduto(usuarioId: String): Produto {
-        val campoNome = binding.activityFormularioProdutoNome
-        val nome = campoNome.text.toString()
-        val campoDescricao = binding.activityFormularioProdutoDescricao
-        val descricao = campoDescricao.text.toString()
-        val campoValor = binding.activityFormularioProdutoValor
-        val valorEmTexto = campoValor.text.toString()
+        val nome = binding.activityFormularioProdutoNome.text.toString()
+        val descricao = binding.activityFormularioProdutoDescricao.text.toString()
+        val valorEmTexto = binding.activityFormularioProdutoValor.text.toString()
         val valor = if (valorEmTexto.isBlank()) {
             BigDecimal.ZERO
         } else {
@@ -114,5 +142,4 @@ class FormularioProdutoActivity : UsuarioBaseActivity() {
             usuarioId = usuarioId
         )
     }
-
 }
